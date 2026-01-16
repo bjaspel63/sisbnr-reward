@@ -425,7 +425,9 @@ function downloadSectionPDF() {
       y = 20;
     }
 
-      // Add note section
+  });
+
+  // Add note section
   y += 10;
 
   if (y > 250) {
@@ -444,8 +446,6 @@ function downloadSectionPDF() {
 
   const wrappedNote = doc.splitTextToSize(noteText, 180);
   doc.text(wrappedNote, 14, y);
-
-  });
   
   const fileName = `${safeFileName(className)}_${safeFileName(sName)}_Report.pdf`;
   doc.save(fileName);
