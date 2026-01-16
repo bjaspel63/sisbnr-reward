@@ -1,12 +1,3 @@
-// app.js (UPDATED for students.csv on Netlify)
-// Required file in same folder: students.csv
-// CSV columns: id,name,section
-//
-// Example:
-// id,name,section
-// G1B001,Anna,Grade 1 - Blue
-// G1B002,Ben,Grade 1 - Blue
-
 
 // ========================
 // DATA (loaded from CSV)
@@ -19,9 +10,6 @@ const ORDER = ["none", "green", "bronze", "silver", "gold"];
 // Storage key per class
 const KEY_PREFIX = "ladder_tiers_class_v1::";
 
-// ========================
-// DOM
-// ========================
 const downloadPdfBtn = document.getElementById("downloadPdfBtn");
 const classSelect = document.getElementById("classSelect");
 const studentList = document.getElementById("studentList");
@@ -112,9 +100,6 @@ async function loadStudentsCSV() {
   return classes;
 }
 
-// ========================
-// AVATAR (random but stable)
-// ========================
 const EMOJIS = [
   "🦄","🐯","🦊","🐼","🦖","🐙","🦋","🐵","🐸","🐰","🐨","🦁",
   "🐶","🐱","🐹","🐧","🦉","🐝","🐢","🐬","🦩","🦓","🐠","🦒",
@@ -359,7 +344,7 @@ function downloadSectionPDF() {
 
   // Title
   doc.setFontSize(18);
-  doc.text("Progress Ladder Report", 14, 18);
+  doc.text("SISB-NR Progress Report", 14, 18);
 
   doc.setFontSize(12);
   doc.text(`Section: ${className}`, 14, 28);
@@ -368,7 +353,7 @@ function downloadSectionPDF() {
   // Table header
   let y = 48;
   doc.setFontSize(11);
-  doc.text("No", 14, y);
+  doc.text("Roll Number", 14, y);
   doc.text("Student Name", 30, y);
   doc.text("Level", 150, y);
 
