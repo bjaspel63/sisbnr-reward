@@ -8,32 +8,38 @@
 </head>
 <body>
   <div class="wrap">
-    <header>
-      <div class="titleBlock">
-        <h1>🌈 SISB-NR Rewards</h1>
-        <div class="hint">
-          Drag students: <b>Green → Bronze → Silver → Gold</b> (forward only).<br/>
-          When a student reaches <b>Gold</b>, Spotlight pops up! 🌟
-        </div>
+<header>
+  <div class="titleBlock">
+    <h1>🌈 SISB-NR Progress Ladder Rewards</h1>
+
+    <div class="hint">
+      Drag students: <b>Green → Bronze → Silver → Gold</b> (forward only).<br/>
+      When a student reaches <b>Gold</b>, Spotlight pops up! 🌟
+    </div>
+
+    <!-- Teacher & Subject now under the hint -->
+    <div class="reportMeta">
+      <div class="metaField">
+        <label for="teacherName">Teacher Name</label>
+        <input id="teacherName" type="text" placeholder="e.g., Mr. Jaspel Bosales" />
       </div>
 
-      <div class="controls">
-        <label for="classSelect">Class Section</label>
-        <select id="classSelect"></select>
-
-      <label for="teacherName">Teacher's Name</label>
-      <input id="teacherName" type="text" placeholder="e.g., T. John Doe" />
-
-      <label for="subjectName">Subject</label>
-      <input id="subjectName" type="text" placeholder="e.g., ICT / Computer" />
-
-
-        <!-- NEW: PDF Report Button -->
-        <button id="downloadPdfBtn">📄 Download Section Report (PDF)</button>
-
-        <button id="resetClassBtn">🔄 Reset This Class</button>
+      <div class="metaField">
+        <label for="subjectName">Subject</label>
+        <input id="subjectName" type="text" placeholder="e.g., ICT / Computer" />
       </div>
-    </header>
+    </div>
+  </div>
+
+  <div class="controls">
+    <label for="classSelect">Class Section</label>
+    <select id="classSelect"></select>
+
+    <button id="downloadPdfBtn">📄 Download Section Report (PDF)</button>
+    <button id="resetClassBtn">🔄 Reset This Class</button>
+  </div>
+</header>
+
 
     <main class="grid">
       <section class="panel">
