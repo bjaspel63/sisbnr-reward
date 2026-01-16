@@ -444,8 +444,7 @@ function downloadSectionPDF() {
   doc.text(`Silver  : ${counts.silver}`, 14, 100);
   doc.text(`Gold    : ${counts.gold}`, 14, 108);
 
-  // Start table AFTER summary
-  let y = 120;
+  // Start table AFTER summary let y = 120;
 
   // Note section
   y += 10;
