@@ -310,12 +310,9 @@ button{
   overflow-y: auto;
   max-height: 520px;
   padding: 12px;
+  overflow-y: auto;
 }
 
-/* -----------------------------------------
-   In tier boxes: show Name + Section only
-   (hide the badge/pill)
-   ----------------------------------------- */
 
 /* Stack content nicely in tier boxes */
 .zones .dropArea .student{
@@ -354,3 +351,27 @@ button{
   height: 32px;
   font-size: 18px;
 }
+
+
+
+/* Make student list scrollable */
+.studentList{
+  max-height: 520px;      /* adjust height as you like */
+  overflow-y: auto;      /* enable vertical scroll */
+  padding-right: 6px;   /* space for scrollbar */
+}
+
+.studentList::-webkit-scrollbar{
+  width: 10px;
+}
+
+.studentList::-webkit-scrollbar-track{
+  background: rgba(0,0,0,.08);
+  border-radius: 10px;
+}
+
+.studentList::-webkit-scrollbar-thumb{
+  background: rgba(0,0,0,.35);
+  border-radius: 10px;
+}
+
