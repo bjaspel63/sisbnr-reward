@@ -399,6 +399,8 @@ function downloadSectionPDF() {
   doc.text(`Subject: ${sName}`, 14, 44);
   doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 52);
 
+  let y = 64; 
+
   // Table header
   doc.setFontSize(11);
   doc.text("No.", 14, y);
