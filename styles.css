@@ -368,6 +368,24 @@ button{
   font-size: 18px;
 }
 
+.reportMeta{
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  max-width: 520px;
+}
+
+.metaField{
+  display: grid;
+  gap: 6px;
+}
+
+.metaField label{
+  font-size: 12px;
+  font-weight: 900;
+  color: var(--muted);
+}
 
 
 /* Make student list scrollable */
