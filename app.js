@@ -382,7 +382,6 @@ function downloadSectionPDF() {
 
   const teacherName = teacherNameInput ? (teacherNameInput.value || "").trim() : "";
   const subjectName = subjectNameInput ? (subjectNameInput.value || "").trim() : "";
-
   const tName = teacherName || "—";
   const sName = subjectName || "—";
 
@@ -399,7 +398,8 @@ function downloadSectionPDF() {
   doc.text(`Subject: ${sName}`, 14, 44);
   doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 52);
 
-  let y = 64; 
+  // ✅ DEFINE y
+  let y = 64;
 
   // Table header
   doc.setFontSize(11);
@@ -427,33 +427,28 @@ function downloadSectionPDF() {
     }
   });
 
-    // ===== Summary Section =====
-  const counts = { none: 0, green: 0, bronze: 0, silver: 0, gold: 0 };
+  // ===== Summary Section (AFTER list) =====
+  y += 10;
+  if (y > 240) { doc.addPage(); y = 20; }
 
+  const counts = { none: 0, green: 0, bronze: 0, silver: 0, gold: 0 };
   students.forEach(s => {
     const t = tierMap[s.id] || "none";
     counts[t] = (counts[t] || 0) + 1;
   });
 
   doc.setFontSize(13);
-  doc.text("Progress Summary", 14, 64);
+  doc.text("Progress Summary", 14, y); y += 10;
 
   doc.setFontSize(11);
-  doc.text(`Total Students: ${students.length}`, 14, 74);
-  //doc.text(`None    : ${counts.none}`, 14, 116);
-  doc.text(`Green   : ${counts.green}`, 14, 84);
-  doc.text(`Bronze  : ${counts.bronze}`, 14, 92);
-  doc.text(`Silver  : ${counts.silver}`, 14, 100);
-  doc.text(`Gold    : ${counts.gold}`, 14, 108);
-
-  // Start table AFTER summary let y = 120;
+  doc.text(`Total Students: ${students.length}`, 14, y); y += 8;
+  doc.text(`Green   : ${counts.green}`, 14, y); y += 8;
+  doc.text(`Bronze  : ${counts.bronze}`, 14, y); y += 8;
+  doc.text(`Silver  : ${counts.silver}`, 14, y); y += 8;
+  doc.text(`Gold    : ${counts.gold}`, 14, y); y += 10;
 
   // Note section
-  y += 10;
-  if (y > 250) {
-    doc.addPage();
-    y = 20;
-  }
+  if (y > 250) { doc.addPage(); y = 20; }
 
   doc.setFontSize(11);
   doc.text("Note:", 14, y);
@@ -470,6 +465,7 @@ function downloadSectionPDF() {
   const fileName = `${safeFileName(className)}_${safeFileName(sName)}_Report.pdf`;
   doc.save(fileName);
 }
+
 
 
 // ========================
