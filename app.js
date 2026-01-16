@@ -1,4 +1,3 @@
-
 // ========================
 // DATA (loaded from CSV)
 // ========================
@@ -10,6 +9,12 @@ const ORDER = ["none", "green", "bronze", "silver", "gold"];
 // Storage key per class
 const KEY_PREFIX = "ladder_tiers_class_v1::";
 
+// Meta storage (teacher + subject)
+const META_KEY = "ladder_meta_v1";
+
+// ========================
+// DOM
+// ========================
 const downloadPdfBtn = document.getElementById("downloadPdfBtn");
 const classSelect = document.getElementById("classSelect");
 const studentList = document.getElementById("studentList");
@@ -20,6 +25,10 @@ const spotClass = document.getElementById("spotClass");
 const spotAvatar = document.getElementById("spotAvatar");
 const resetClassBtn = document.getElementById("resetClassBtn");
 const toast = document.getElementById("toast");
+
+// NEW: Teacher + Subject inputs (make sure these exist in HTML)
+const teacherNameInput = document.getElementById("teacherName");
+const subjectNameInput = document.getElementById("subjectName");
 
 // ========================
 // CSV LOADER
@@ -100,6 +109,9 @@ async function loadStudentsCSV() {
   return classes;
 }
 
+// ========================
+// AVATAR (random but stable)
+// ========================
 const EMOJIS = [
   "🦄","🐯","🦊","🐼","🦖","🐙","🦋","🐵","🐸","🐰","🐨","🦁",
   "🐶","🐱","🐹","🐧","🦉","🐝","🐢","🐬","🦩","🦓","🐠","🦒",
@@ -119,7 +131,7 @@ function getAvatarFor(student, className) {
 }
 
 // ========================
-// STORAGE
+// STORAGE (tiers)
 // ========================
 function loadTierMap(className) {
   try {
@@ -146,6 +158,21 @@ function setTier(className, studentId, tier) {
 
 function clearClassProgress(className) {
   localStorage.removeItem(KEY_PREFIX + className);
+}
+
+// ========================
+// STORAGE (teacher + subject)
+// ========================
+function loadMeta() {
+  try {
+    return JSON.parse(localStorage.getItem(META_KEY) || "{}");
+  } catch {
+    return {};
+  }
+}
+
+function saveMeta(meta) {
+  localStorage.setItem(META_KEY, JSON.stringify(meta));
 }
 
 // ========================
@@ -333,25 +360,47 @@ function setupDropTarget(targetEl, toTier, isStudentList) {
   });
 }
 
+// ========================
+// PDF REPORT
+// ========================
+function safeFileName(str) {
+  return String(str || "")
+    .trim()
+    .replace(/[\/\\?%*:|"<>]/g, "-")
+    .replace(/\s+/g, "_");
+}
+
 function downloadSectionPDF() {
+  if (!window.jspdf || !window.jspdf.jsPDF) {
+    alert("PDF library (jsPDF) not loaded. Check the jsPDF script tag in index.html.");
+    return;
+  }
+
   const className = classSelect.value;
   const students = CLASSES[className] || [];
-
   const tierMap = loadTierMap(className);
+
+  const teacherName = teacherNameInput ? (teacherNameInput.value || "").trim() : "";
+  const subjectName = subjectNameInput ? (subjectNameInput.value || "").trim() : "";
+
+  const tName = teacherName || "—";
+  const sName = subjectName || "—";
 
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
 
-  // Title
+  // Header
   doc.setFontSize(18);
   doc.text("SISB-NR Progress Report", 14, 18);
 
   doc.setFontSize(12);
   doc.text(`Section: ${className}`, 14, 28);
-  doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 36);
+  doc.text(`Teacher: ${tName}`, 14, 36);
+  doc.text(`Subject: ${sName}`, 14, 44);
+  doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 52);
 
   // Table header
-  let y = 48;
+  let y = 64;
   doc.setFontSize(11);
   doc.text("RN", 14, y);
   doc.text("Student Name", 30, y);
@@ -359,7 +408,7 @@ function downloadSectionPDF() {
 
   y += 6;
   doc.line(14, y, 195, y);
-  y += 6;
+  y += 8;
 
   // Rows
   students.forEach((s, i) => {
@@ -371,17 +420,15 @@ function downloadSectionPDF() {
 
     y += 8;
 
-    // New page if needed
     if (y > 270) {
       doc.addPage();
       y = 20;
     }
   });
 
-  const safeName = className.replace(/\s+/g, "_");
-  doc.save(`${safeName}_Report.pdf`);
+  const fileName = `${safeFileName(className)}_${safeFileName(sName)}_Report.pdf`;
+  doc.save(fileName);
 }
-
 
 // ========================
 // INIT
@@ -401,12 +448,28 @@ async function init() {
 
     classSelect.value = classNames[0];
 
+    // load meta into inputs (if present)
+    const meta = loadMeta();
+    if (teacherNameInput) teacherNameInput.value = meta.teacherName || "";
+    if (subjectNameInput) subjectNameInput.value = meta.subjectName || "";
+
+    // save meta while typing
+    if (teacherNameInput) {
+      teacherNameInput.addEventListener("input", () => {
+        saveMeta({ teacherName: teacherNameInput.value, subjectName: subjectNameInput ? subjectNameInput.value : "" });
+      });
+    }
+    if (subjectNameInput) {
+      subjectNameInput.addEventListener("input", () => {
+        saveMeta({ teacherName: teacherNameInput ? teacherNameInput.value : "", subjectName: subjectNameInput.value });
+      });
+    }
+
     // render first class
     renderClass(classSelect.value);
 
     // wire events
     classSelect.addEventListener("change", () => renderClass(classSelect.value));
-
     downloadPdfBtn.addEventListener("click", downloadSectionPDF);
 
     resetClassBtn.addEventListener("click", () => {
