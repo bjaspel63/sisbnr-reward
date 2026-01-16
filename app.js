@@ -353,7 +353,7 @@ function downloadSectionPDF() {
   // Table header
   let y = 48;
   doc.setFontSize(11);
-  doc.text("Roll Number", 14, y);
+  doc.text("RN", 14, y);
   doc.text("Student Name", 30, y);
   doc.text("Level", 150, y);
 
