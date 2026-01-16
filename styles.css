@@ -61,6 +61,22 @@ select:focus{
   box-shadow: 0 0 0 4px rgba(255, 77, 210, .18);
 }
 
+input{
+  width:100%;
+  border:2px solid rgba(0,0,0,.08);
+  border-radius:14px;
+  padding:10px 12px;
+  font-size:14px;
+  outline:none;
+  background:#fff;
+}
+
+input:focus{
+  border-color: rgba(255, 77, 210, .6);
+  box-shadow: 0 0 0 4px rgba(255, 77, 210, .18);
+}
+
+
 button{
   border:0; cursor:pointer;
   border-radius:14px;
