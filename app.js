@@ -391,7 +391,7 @@ function downloadSectionPDF() {
 
   // Header
   doc.setFontSize(18);
-  doc.text("SISB-NR Progress Report", 14, 18);
+  doc.text("SISB-NR Positive Behavior Report", 14, 18);
 
   doc.setFontSize(12);
   doc.text(`Section: ${className}`, 14, 28);
