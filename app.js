@@ -399,8 +399,28 @@ function downloadSectionPDF() {
   doc.text(`Subject: ${sName}`, 14, 44);
   doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 52);
 
+  // ===== Summary Section =====
+  const counts = { none: 0, green: 0, bronze: 0, silver: 0, gold: 0 };
+
+  students.forEach(s => {
+    const t = tierMap[s.id] || "none";
+    counts[t] = (counts[t] || 0) + 1;
+  });
+
+  doc.setFontSize(13);
+  doc.text("Progress Summary", 14, 64);
+
+  doc.setFontSize(11);
+  doc.text(`Total Students: ${students.length}`, 14, 74);
+  doc.text(`Green   : ${counts.green}`, 14, 84);
+  doc.text(`Bronze  : ${counts.bronze}`, 14, 92);
+  doc.text(`Silver  : ${counts.silver}`, 14, 100);
+  doc.text(`Gold    : ${counts.gold}`, 14, 108);
+
+  // Start table AFTER summary
+  let y = 120;
+
   // Table header
-  let y = 64;
   doc.setFontSize(11);
   doc.text("RN", 14, y);
   doc.text("Student Name", 30, y);
@@ -424,12 +444,10 @@ function downloadSectionPDF() {
       doc.addPage();
       y = 20;
     }
-
   });
 
-  // Add note section
+  // Note section
   y += 10;
-
   if (y > 250) {
     doc.addPage();
     y = 20;
@@ -446,10 +464,11 @@ function downloadSectionPDF() {
 
   const wrappedNote = doc.splitTextToSize(noteText, 180);
   doc.text(wrappedNote, 14, y);
-  
+
   const fileName = `${safeFileName(className)}_${safeFileName(sName)}_Report.pdf`;
   doc.save(fileName);
 }
+
 
 // ========================
 // INIT
