@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Progress Ladder Rewards</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="titleBlock">
+        <h1>🌈 Progress Ladder Rewards</h1>
+        <div class="hint">
+          Drag students: <b>Green → Bronze → Silver → Gold</b> (forward only).<br/>
+          When a student reaches <b>Gold</b>, Spotlight pops up! 🌟
+        </div>
+      </div>
+
+      <div class="controls">
+        <label for="classSelect">Class Section</label>
+        <select id="classSelect"></select>
+
+        <!-- NEW: PDF Report Button -->
+        <button id="downloadPdfBtn">📄 Download Section Report (PDF)</button>
+
+        <button id="resetClassBtn">🔄 Reset This Class</button>
+      </div>
+    </header>
+
+    <main class="grid">
+      <section class="panel">
+        <h2>👦 Students</h2>
+        <div class="studentList" id="studentList"></div>
+        <div class="mini">
+          Tip: Drag a student into <b>Green</b> first ✅
+        </div>
+      </section>
+
+      <section class="zones">
+        <div class="zone z-green" data-tier="green">
+          <div class="tag">✅ GREEN</div>
+          <div class="zoneHead">Green</div>
+          <div class="dropArea" data-drop="green"></div>
+        </div>
+
+        <div class="zone z-bronze" data-tier="bronze">
+          <div class="tag">🥉 BRONZE</div>
+          <div class="zoneHead">Bronze</div>
+          <div class="dropArea" data-drop="bronze"></div>
+        </div>
+
+        <div class="zone z-silver" data-tier="silver">
+          <div class="tag">🥈 SILVER</div>
+          <div class="zoneHead">Silver</div>
+          <div class="dropArea" data-drop="silver"></div>
+        </div>
+
+        <div class="zone z-gold" data-tier="gold">
+          <div class="tag">🥇 GOLD</div>
+          <div class="zoneHead">Gold (Spotlight)</div>
+          <div class="dropArea" data-drop="gold"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Spotlight -->
+  <div class="overlay" id="overlay">
+    <div class="spot">
+      <div class="confetti" id="confetti"></div>
+      <div class="spotCard">
+        <div class="spotTitle">🏆 GOLD SPOTLIGHT 🏆</div>
+        <div class="bigName" id="spotName">STUDENT</div>
+        <div class="spotSub" id="spotClass">Class</div>
+        <div class="bigAvatar" id="spotAvatar">🌟</div>
+        <div class="closeHint">Click anywhere to close • Press ESC to close</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tiny toast message -->
+  <div class="toast" id="toast"></div>
+
+  <!-- NEW: jsPDF (needed for PDF reports) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script src="app.js"></script>
+</body>
+</html>
