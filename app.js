@@ -424,8 +424,29 @@ function downloadSectionPDF() {
       doc.addPage();
       y = 20;
     }
-  });
 
+      // Add note section
+  y += 10;
+
+  if (y > 250) {
+    doc.addPage();
+    y = 20;
+  }
+
+  doc.setFontSize(11);
+  doc.text("Note:", 14, y);
+  y += 6;
+
+  doc.setFontSize(10);
+  const noteText =
+    "This Progress Ladder Report shows each student's current achievement level based on classroom participation, performance, and behavior. " +
+    "Students progress through Green, Bronze, Silver, and Gold levels. Gold level represents outstanding achievement and excellence.";
+
+  const wrappedNote = doc.splitTextToSize(noteText, 180);
+  doc.text(wrappedNote, 14, y);
+
+  });
+  
   const fileName = `${safeFileName(className)}_${safeFileName(sName)}_Report.pdf`;
   doc.save(fileName);
 }
