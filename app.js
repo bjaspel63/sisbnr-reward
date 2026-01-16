@@ -447,6 +447,8 @@ function downloadSectionPDF() {
   doc.text(`Silver  : ${counts.silver}`, 14, y); y += 8;
   doc.text(`Gold    : ${counts.gold}`, 14, y); y += 10;
 
+  y+=24
+
   // Note section
   if (y > 250) { doc.addPage(); y = 20; }
 
