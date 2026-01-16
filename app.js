@@ -473,11 +473,17 @@ async function init() {
     downloadPdfBtn.addEventListener("click", downloadSectionPDF);
 
     resetClassBtn.addEventListener("click", () => {
-      const cls = classSelect.value;
-      clearClassProgress(cls);
-      renderClass(cls);
-      showToast("Class reset ✅");
-    });
+    const cls = classSelect.value;
+  
+    const ok = confirm(`Reset this class?\n\n${cls}\n\nThis will clear all Green/Bronze/Silver/Gold progress for this section on this device.`);
+  
+    if (!ok) return;
+  
+    clearClassProgress(cls);
+    renderClass(cls);
+    showToast("Class reset ✅");
+  });
+
 
     setupDropZones();
   } catch (err) {
