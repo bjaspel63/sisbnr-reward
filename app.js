@@ -412,6 +412,7 @@ function downloadSectionPDF() {
 
   doc.setFontSize(11);
   doc.text(`Total Students: ${students.length}`, 14, 74);
+  doc.text(`None    : ${counts.none}`, 14, 116);
   doc.text(`Green   : ${counts.green}`, 14, 84);
   doc.text(`Bronze  : ${counts.bronze}`, 14, 92);
   doc.text(`Silver  : ${counts.silver}`, 14, 100);
