@@ -30,6 +30,19 @@ const toast = document.getElementById("toast");
 const teacherNameInput = document.getElementById("teacherName");
 const subjectNameInput = document.getElementById("subjectName");
 
+const spotSound = document.getElementById("spotSound");
+
+// Unlock audio on first user interaction
+document.addEventListener("click", () => {
+  if (spotSound) {
+    spotSound.play().then(() => {
+      spotSound.pause();
+      spotSound.currentTime = 0;
+    }).catch(()=>{});
+  }
+}, { once: true });
+
+
 // ========================
 // CSV LOADER
 // ========================
@@ -223,6 +236,14 @@ function showSpotlight(className, student) {
 
   overlay.classList.add("show");
   burstConfetti(confetti, 160);
+
+  if (spotSound) {
+    spotSound.currentTime = 0; // rewind
+    spotSound.play().catch(() => {
+      // Autoplay might be blocked until user interacts once
+      console.log("Sound blocked by browser until user interaction.");
+    });
+  }
 }
 
 // close spotlight
