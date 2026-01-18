@@ -481,8 +481,7 @@ function downloadSectionPDF() {
   const noteText =
     "This Positive Behavior Report shows each student's current achievement level based on classroom participation, performance, and behavior. " +
     "Students progress through Green, Bronze, Silver, and Gold levels. Gold level represents outstanding achievement and excellence." +
-    " " +
-    "System generated.";
+    "This is a system generated report.";
 
   const wrappedNote = doc.splitTextToSize(noteText, 180);
   doc.text(wrappedNote, 14, y);
