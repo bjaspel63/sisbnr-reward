@@ -255,13 +255,15 @@ function startOfWeek(d = new Date()) {
   return x;
 }
 
+// Week = Monday to Friday
 function endOfWeek(d = new Date()) {
-  const s = startOfWeek(d);
+  const s = startOfWeek(d);     // Monday
   const e = new Date(s);
-  e.setDate(e.getDate() + 6);
+  e.setDate(e.getDate() + 4);   // Friday
   e.setHours(23, 59, 59, 999);
   return e;
 }
+
 
 function weekKey(d = new Date()) {
   const s = startOfWeek(d);
