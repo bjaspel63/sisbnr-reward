@@ -18,7 +18,6 @@
           When a student reaches <b>Gold</b>, Spotlight pops up! 🌟
         </div>
 
-        <!-- Teacher & Subject now under the hint -->
         <div class="reportMeta">
           <div class="metaField">
             <label for="teacherName">Teacher's Name</label>
@@ -37,10 +36,7 @@
         <select id="classSelect"></select>
 
         <button id="downloadPdfBtn">📄 Download Section Report (PDF)</button>
-
-        <!-- NEW: weekly poster button -->
         <button id="weeklyPosterBtn">🖼️ Weekly Spotlight Poster (PDF)</button>
-
         <button id="resetClassBtn">🔄 Reset This Class</button>
       </div>
     </header>
@@ -55,17 +51,23 @@
           Tip: Drag a student into <b>Green</b> first ✅
         </div>
 
-        <!-- NEW: Weekly Spotlight Summary -->
+        <!-- Weekly Spotlight Summary (Show/Hide) -->
         <div class="weeklyCard">
           <div class="weeklyHead">
             <h3>🌟 Weekly Spotlight</h3>
-            <div class="weeklyRange" id="weeklyRange">This week</div>
+
+            <div class="weeklyRight">
+              <div class="weeklyRange" id="weeklyRange">This week</div>
+              <button id="toggleWeeklyBtn" class="btnLight" type="button">Hide</button>
+            </div>
           </div>
 
-          <div class="weeklyList" id="weeklyList"></div>
+          <div class="weeklyBody" id="weeklyBody">
+            <div class="weeklyList" id="weeklyList"></div>
 
-          <div class="weeklyFooter">
-            <button id="clearWeeklyBtn" class="btnLight">🧹 Clear Weekly List</button>
+            <div class="weeklyFooter">
+              <button id="clearWeeklyBtn" class="btnLight" type="button">🧹 Clear Weekly List</button>
+            </div>
           </div>
         </div>
       </section>
@@ -112,14 +114,11 @@
     </div>
   </div>
 
-  <!-- Tiny toast message -->
   <div class="toast" id="toast"></div>
 
   <audio id="spotSound" src="success.mp3" preload="auto"></audio>
 
-  <!-- jsPDF (needed for PDF reports) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
   <script src="app.js"></script>
 </body>
 </html>
