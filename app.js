@@ -758,7 +758,7 @@ function downloadWeeklySpotlightPosterPDF() {
     doc.setTextColor(17, 24, 39);
     doc.setFont("helvetica", "bold");
     doc.setFontSize(11);
-    doc.text("Amazing work! Keep shining bright!", W / 2, 286, { align: "center" });
+    doc.text("Amazing work! Keep shining bright!", W / 2, 280, { align: "center" });
 
     // ✅ moved UP (was 289)
     doc.setFont("helvetica", "normal");
