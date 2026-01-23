@@ -15,6 +15,9 @@ const META_KEY = "ladder_meta_v1";
 // Weekly spotlight log storage
 const SPOTLIGHT_LOG_KEY = "spotlight_log_v1";
 
+// ✅ Weekly Spotlight UI state (show/hide)
+const WEEKLY_UI_KEY = "weekly_ui_v1";
+
 // ========================
 // DOM
 // ========================
@@ -24,6 +27,10 @@ const clearWeeklyBtn = document.getElementById("clearWeeklyBtn");
 
 const weeklyListEl = document.getElementById("weeklyList");
 const weeklyRangeEl = document.getElementById("weeklyRange");
+
+// ✅ NEW: show/hide
+const toggleWeeklyBtn = document.getElementById("toggleWeeklyBtn");
+const weeklyBodyEl = document.getElementById("weeklyBody");
 
 const classSelect = document.getElementById("classSelect");
 const studentList = document.getElementById("studentList");
@@ -62,7 +69,6 @@ document.addEventListener(
 // CSV LOADER
 // ========================
 function splitCSVLine(line) {
-  // Handles commas inside quotes: "Last, First"
   const out = [];
   let cur = "";
   let inQuotes = false;
@@ -71,7 +77,6 @@ function splitCSVLine(line) {
     const ch = line[i];
 
     if (ch === '"') {
-      // toggle quotes or escaped quote
       if (inQuotes && line[i + 1] === '"') {
         cur += '"';
         i++;
@@ -126,10 +131,9 @@ async function loadStudentsCSV() {
     if (!id || !name || !section) continue;
 
     if (!classes[section]) classes[section] = [];
-    classes[section].push({ id, name }); // emoji assigned later
+    classes[section].push({ id, name });
   }
 
-  // sort names per class (optional)
   for (const sec of Object.keys(classes)) {
     classes[sec].sort((a, b) => a.name.localeCompare(b.name));
   }
@@ -153,7 +157,6 @@ function hashString(str) {
 }
 
 function getAvatarFor(student, className) {
-  // stable per student + class
   const key = `${student.id}|${student.name}|${className}`.toLowerCase();
   return EMOJIS[hashString(key) % EMOJIS.length];
 }
@@ -218,12 +221,36 @@ function saveSpotlightLog(list) {
   localStorage.setItem(SPOTLIGHT_LOG_KEY, JSON.stringify(list));
 }
 
-// Week starts on Monday (local time)
+// ========================
+// STORAGE (weekly UI show/hide)
+// ========================
+function loadWeeklyUI() {
+  try {
+    return JSON.parse(localStorage.getItem(WEEKLY_UI_KEY) || "{}");
+  } catch {
+    return {};
+  }
+}
+
+function saveWeeklyUI(state) {
+  localStorage.setItem(WEEKLY_UI_KEY, JSON.stringify(state));
+}
+
+function setWeeklyVisible(isVisible) {
+  if (!weeklyBodyEl || !toggleWeeklyBtn) return;
+  weeklyBodyEl.classList.toggle("hide", !isVisible);
+  toggleWeeklyBtn.textContent = isVisible ? "Hide" : "Show";
+  saveWeeklyUI({ visible: isVisible });
+}
+
+// ========================
+// Week helpers (Mon–Sun)
+// ========================
 function startOfWeek(d = new Date()) {
   const x = new Date(d);
   x.setHours(0, 0, 0, 0);
   const day = x.getDay(); // 0=Sun..6=Sat
-  const diff = day === 0 ? -6 : 1 - day; // shift to Monday
+  const diff = day === 0 ? -6 : 1 - day;
   x.setDate(x.getDate() + diff);
   return x;
 }
@@ -238,7 +265,7 @@ function endOfWeek(d = new Date()) {
 
 function weekKey(d = new Date()) {
   const s = startOfWeek(d);
-  return s.toISOString().slice(0, 10); // YYYY-MM-DD (Monday)
+  return s.toISOString().slice(0, 10);
 }
 
 function formatDate(d) {
@@ -263,7 +290,6 @@ function nextTier(fromTier) {
   return ORDER[i + 1] || null;
 }
 
-// forward only: must go to the next step exactly
 function canMoveForward(fromTier, toTier) {
   return toTier === nextTier(fromTier);
 }
@@ -313,9 +339,7 @@ function showSpotlight(className, student) {
 }
 
 // close spotlight
-if (overlay) {
-  overlay.addEventListener("click", () => overlay.classList.remove("show"));
-}
+if (overlay) overlay.addEventListener("click", () => overlay.classList.remove("show"));
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && overlay) overlay.classList.remove("show");
 });
@@ -327,7 +351,6 @@ function logGoldSpotlight(className, student) {
   const wk = weekKey(new Date());
   const log = loadSpotlightLog();
 
-  // avoid duplicates: same student + same section, same week
   const exists = log.some(
     (x) => x.week === wk && x.studentId === student.id && x.section === className
   );
@@ -410,20 +433,17 @@ function makeStudentCard(student, className) {
 }
 
 function renderClass(className) {
-  // clear all areas
   if (studentList) studentList.innerHTML = "";
   document.querySelectorAll(".dropArea").forEach((a) => (a.innerHTML = ""));
 
   const students = CLASSES[className] || [];
 
-  // place students: either in Student List (none) OR in tier drop areas
   for (const s of students) {
     const tier = getTier(className, s.id);
     const card = makeStudentCard(s, className);
 
-    if (tier === "none") {
-      studentList.appendChild(card);
-    } else {
+    if (tier === "none") studentList.appendChild(card);
+    else {
       const area = document.querySelector(`.dropArea[data-drop="${tier}"]`);
       (area || studentList).appendChild(card);
     }
@@ -434,10 +454,8 @@ function renderClass(className) {
 // DROP ZONES
 // ========================
 function setupDropZones() {
-  // Student list acts as "none" drop target
   setupDropTarget(studentList, "none", true);
 
-  // Tiers
   document.querySelectorAll(".zone").forEach((zone) => {
     const tier = zone.dataset.tier;
     const area = zone.querySelector(".dropArea");
@@ -479,7 +497,6 @@ function setupDropTarget(targetEl, toTier, isStudentList) {
 
     const fromTier = getTier(className, sid);
 
-    // Forward-only rule (next step exactly)
     if (toTier === "none") {
       if (fromTier !== "none") {
         showToast("Forward only! 🙂 (No going back)");
@@ -493,7 +510,6 @@ function setupDropTarget(targetEl, toTier, isStudentList) {
       }
     }
 
-    // Move the card (no duplicates)
     const card = document.querySelector(`.student[data-sid="${sid}"]`);
     const dropArea =
       toTier === "none"
@@ -502,10 +518,8 @@ function setupDropTarget(targetEl, toTier, isStudentList) {
 
     if (card && dropArea) dropArea.prepend(card);
 
-    // Save tier
     setTier(className, sid, toTier);
 
-    // Spotlight on Gold + weekly log
     if (toTier === "gold") {
       showSpotlight(className, student);
       logGoldSpotlight(className, student);
@@ -542,7 +556,6 @@ function downloadSectionPDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
 
-  // Header
   doc.setFontSize(18);
   doc.text("SISB-NR Positive Behavior Report", 14, 18);
 
@@ -554,7 +567,6 @@ function downloadSectionPDF() {
 
   let y = 64;
 
-  // Table header
   doc.setFontSize(11);
   doc.text("No.", 14, y);
   doc.text("Student Name", 30, y);
@@ -564,7 +576,6 @@ function downloadSectionPDF() {
   doc.line(14, y, 195, y);
   y += 8;
 
-  // Rows
   students.forEach((s, i) => {
     const level = (tierMap[s.id] || "none").toUpperCase();
 
@@ -580,7 +591,6 @@ function downloadSectionPDF() {
     }
   });
 
-  // Summary
   y += 10;
   if (y > 240) {
     doc.addPage();
@@ -606,7 +616,6 @@ function downloadSectionPDF() {
 
   y += 24;
 
-  // Note section
   if (y > 250) {
     doc.addPage();
     y = 20;
@@ -653,10 +662,8 @@ function downloadWeeklySpotlightPosterPDF() {
 
   const W = 210, H = 297;
 
-  // Use built-in safe font only (no emoji support)
   doc.setFont("helvetica", "normal");
 
-  // ---- helpers ----
   const clampText = (str, max) => {
     const s = String(str || "");
     return s.length > max ? s.slice(0, max - 1) + "…" : s;
@@ -664,14 +671,13 @@ function downloadWeeklySpotlightPosterPDF() {
 
   const formatRange = () => `${formatDate(s)} – ${formatDate(e)}`;
 
-  // Confetti colors (bright, kid-friendly)
   const CONF_COLORS = [
-    [255, 77, 210],   // pink
-    [255, 204, 51],   // yellow
-    [106, 92, 255],   // purple
-    [0, 212, 255],    // cyan
-    [124, 255, 107],  // green
-    [255, 120, 0],    // orange
+    [255, 77, 210],
+    [255, 204, 51],
+    [106, 92, 255],
+    [0, 212, 255],
+    [124, 255, 107],
+    [255, 120, 0],
   ];
 
   function drawConfetti(count = 220) {
@@ -682,13 +688,8 @@ function downloadWeeklySpotlightPosterPDF() {
       const x = Math.random() * W;
       const y = Math.random() * H;
 
-      if (Math.random() < 0.55) {
-        doc.circle(x, y, 0.8 + Math.random() * 1.2, "F");
-      } else {
-        const rw = 1.2 + Math.random() * 2.5;
-        const rh = 2.2 + Math.random() * 4.5;
-        doc.rect(x, y, rw, rh, "F");
-      }
+      if (Math.random() < 0.55) doc.circle(x, y, 0.8 + Math.random() * 1.2, "F");
+      else doc.rect(x, y, 1.2 + Math.random() * 2.5, 2.2 + Math.random() * 4.5, "F");
     }
   }
 
@@ -730,7 +731,6 @@ function downloadWeeklySpotlightPosterPDF() {
     doc.setFontSize(11);
     doc.text("SISB-NR Positive Behavior Rewards", W / 2, 39, { align: "center" });
 
-    // ✅ moved LOWER (was 54)
     doc.setTextColor(17, 24, 39);
     doc.setFontSize(12);
     doc.text(`Week: ${formatRange()}`, W / 2, 58, { align: "center" });
@@ -760,7 +760,6 @@ function downloadWeeklySpotlightPosterPDF() {
     doc.setFontSize(11);
     doc.text("Amazing work! Keep shining bright!", W / 2, 280, { align: "center" });
 
-    // ✅ moved UP (was 289)
     doc.setFont("helvetica", "normal");
     doc.setFontSize(9);
     doc.setTextColor(60);
@@ -862,28 +861,23 @@ function downloadWeeklySpotlightPosterPDF() {
   doc.save(`Weekly_Spotlight_${weekKey(new Date())}.pdf`);
 }
 
-
 // ========================
 // INIT
 // ========================
 async function init() {
   try {
-    // Load students from CSV
     CLASSES = await loadStudentsCSV();
 
     const classNames = Object.keys(CLASSES);
     if (!classNames.length) throw new Error("No classes found in students.csv");
 
-    // populate class dropdown
     classSelect.innerHTML = classNames.map((c) => `<option value="${c}">${c}</option>`).join("");
     classSelect.value = classNames[0];
 
-    // load meta into inputs (if present)
     const meta = loadMeta();
     if (teacherNameInput) teacherNameInput.value = meta.teacherName || "";
     if (subjectNameInput) subjectNameInput.value = meta.subjectName || "";
 
-    // save meta while typing
     if (teacherNameInput) {
       teacherNameInput.addEventListener("input", () => {
         saveMeta({
@@ -901,11 +895,22 @@ async function init() {
       });
     }
 
-    // render first class
     renderClass(classSelect.value);
 
-    // weekly UI
+    // ✅ weekly UI
     renderWeeklySummary();
+
+    // ✅ restore weekly show/hide state
+    const ui = loadWeeklyUI();
+    setWeeklyVisible(ui.visible !== false);
+
+    // ✅ wire toggle show/hide
+    if (toggleWeeklyBtn) {
+      toggleWeeklyBtn.addEventListener("click", () => {
+        const hidden = weeklyBodyEl && weeklyBodyEl.classList.contains("hide");
+        setWeeklyVisible(hidden); // if hidden -> show, else hide
+      });
+    }
 
     // wire events
     classSelect.addEventListener("change", () => renderClass(classSelect.value));
