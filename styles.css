@@ -503,5 +503,14 @@ button{
 .btnLight:hover{
   transform: translateY(-1px);
 }
+.weeklyRight{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.weeklyBody.hide{
+  display:none;
+}
 
 
