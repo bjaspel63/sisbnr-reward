@@ -683,10 +683,8 @@ function downloadWeeklySpotlightPosterPDF() {
       const y = Math.random() * H;
 
       if (Math.random() < 0.55) {
-        // dot
         doc.circle(x, y, 0.8 + Math.random() * 1.2, "F");
       } else {
-        // strip
         const rw = 1.2 + Math.random() * 2.5;
         const rh = 2.2 + Math.random() * 4.5;
         doc.rect(x, y, rw, rh, "F");
@@ -695,16 +693,15 @@ function downloadWeeklySpotlightPosterPDF() {
   }
 
   function drawBackground() {
-    // Soft pastel stacked bands (lively background)
     doc.setFillColor(245, 250, 255);
     doc.rect(0, 0, W, H, "F");
 
     const bands = [
-      [255, 232, 252], // very light pink
-      [235, 248, 255], // very light cyan
-      [235, 255, 239], // very light green
-      [255, 250, 230], // very light yellow
-      [240, 238, 255], // very light purple
+      [255, 232, 252],
+      [235, 248, 255],
+      [235, 255, 239],
+      [255, 250, 230],
+      [240, 238, 255],
     ];
 
     let y = 0;
@@ -715,33 +712,28 @@ function downloadWeeklySpotlightPosterPDF() {
       y += 50;
     }
 
-    // Confetti overlay
     drawConfetti(240);
   }
 
   function drawHeader() {
-    // Big colorful header
-    doc.setFillColor(106, 92, 255); // purple
+    doc.setFillColor(106, 92, 255);
     doc.roundedRect(8, 8, 194, 28, 6, 6, "F");
 
-    doc.setFillColor(0, 212, 255); // cyan ribbon
+    doc.setFillColor(0, 212, 255);
     doc.roundedRect(18, 32, 174, 10, 6, 6, "F");
 
-    // Title (NO emoji)
     doc.setTextColor(255, 255, 255);
     doc.setFont("helvetica", "bold");
     doc.setFontSize(20);
     doc.text("WEEKLY SPOTLIGHT", W / 2, 26, { align: "center" });
 
     doc.setFontSize(11);
-    doc.setFont("helvetica", "bold");
     doc.text("SISB-NR Positive Behavior Rewards", W / 2, 39, { align: "center" });
 
-    // Week Range
+    // ✅ moved LOWER (was 54)
     doc.setTextColor(17, 24, 39);
-    doc.setFont("helvetica", "bold");
     doc.setFontSize(12);
-    doc.text(`Week: ${formatRange()}`, W / 2, 54, { align: "center" });
+    doc.text(`Week: ${formatRange()}`, W / 2, 58, { align: "center" });
   }
 
   function drawMainCard() {
@@ -753,11 +745,9 @@ function downloadWeeklySpotlightPosterPDF() {
   }
 
   function drawFooter() {
-    // Footer ribbon + bubbles (NO emoji)
-    doc.setFillColor(255, 204, 51); // yellow
+    doc.setFillColor(255, 204, 51);
     doc.roundedRect(8, 274, 194, 15, 6, 6, "F");
 
-    // bubbles
     doc.setFillColor(255, 77, 210);
     doc.circle(18, 281.5, 3.0, "F");
     doc.setFillColor(0, 212, 255);
@@ -770,13 +760,14 @@ function downloadWeeklySpotlightPosterPDF() {
     doc.setFontSize(11);
     doc.text("Amazing work! Keep shining bright!", W / 2, 283, { align: "center" });
 
+    // ✅ moved UP (was 289)
     doc.setFont("helvetica", "normal");
     doc.setFontSize(9);
     doc.setTextColor(60);
     doc.text(
       `Teacher: ${clampText(tName, 30)}  •  Subject: ${clampText(subName, 20)}`,
       W / 2,
-      289,
+      286,
       { align: "center" }
     );
   }
@@ -784,14 +775,12 @@ function downloadWeeklySpotlightPosterPDF() {
   function drawList() {
     let y = 78;
 
-    // Title (NO emoji)
     doc.setTextColor(17, 24, 39);
     doc.setFont("helvetica", "bold");
     doc.setFontSize(14);
     doc.text("Gold Spotlight Students", W / 2, y, { align: "center" });
     y += 10;
 
-    // If none
     if (!entries.length) {
       doc.setFontSize(16);
       doc.text("No Gold Spotlights yet this week.", W / 2, 150, { align: "center" });
@@ -803,7 +792,6 @@ function downloadWeeklySpotlightPosterPDF() {
       return;
     }
 
-    // header row
     doc.setFillColor(245, 250, 255);
     doc.roundedRect(18, y - 6, 174, 10, 4, 4, "F");
 
@@ -847,17 +835,14 @@ function downloadWeeklySpotlightPosterPDF() {
         doc.setFontSize(12);
       }
 
-      // alternating bubble row
       const alt = i % 2 === 1;
       doc.setFillColor(alt ? 255 : 250, alt ? 245 : 255, alt ? 255 : 245);
       doc.roundedRect(18, y - 6, 174, 11, 5, 5, "F");
 
-      // a small star-like bullet (ASCII safe)
       doc.setTextColor(255, 77, 210);
       doc.setFont("helvetica", "bold");
       doc.text("*", 20, y);
 
-      // row text
       doc.setTextColor(17, 24, 39);
       doc.setFont("helvetica", "normal");
       doc.text(String(i + 1), 24, y);
@@ -868,7 +853,6 @@ function downloadWeeklySpotlightPosterPDF() {
     });
   }
 
-  // Build poster
   drawBackground();
   drawHeader();
   drawMainCard();
