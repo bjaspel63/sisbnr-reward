@@ -9,45 +9,64 @@
 </head>
 <body>
   <div class="wrap">
-<header>
-  <div class="titleBlock">
-    <h1>🌈 SISB-NR Positive Behavior Rewards</h1>
+    <header>
+      <div class="titleBlock">
+        <h1>🌈 SISB-NR Positive Behavior Rewards</h1>
 
-    <div class="hint">
-      Drag students: <b>Green → Bronze → Silver → Gold</b> (forward only).<br/>
-      When a student reaches <b>Gold</b>, Spotlight pops up! 🌟
-    </div>
+        <div class="hint">
+          Drag students: <b>Green → Bronze → Silver → Gold</b> (forward only).<br/>
+          When a student reaches <b>Gold</b>, Spotlight pops up! 🌟
+        </div>
 
-    <!-- Teacher & Subject now under the hint -->
-    <div class="reportMeta">
-      <div class="metaField">
-        <label for="teacherName">Teacher's Name</label>
-        <input id="teacherName" type="text" placeholder="e.g., T. Jaspel" />
+        <!-- Teacher & Subject now under the hint -->
+        <div class="reportMeta">
+          <div class="metaField">
+            <label for="teacherName">Teacher's Name</label>
+            <input id="teacherName" type="text" placeholder="e.g., T. Jaspel" />
+          </div>
+
+          <div class="metaField">
+            <label for="subjectName">Subject</label>
+            <input id="subjectName" type="text" placeholder="e.g., ICT" />
+          </div>
+        </div>
       </div>
 
-      <div class="metaField">
-        <label for="subjectName">Subject</label>
-        <input id="subjectName" type="text" placeholder="e.g., ICT" />
+      <div class="controls">
+        <label for="classSelect">Class Section</label>
+        <select id="classSelect"></select>
+
+        <button id="downloadPdfBtn">📄 Download Section Report (PDF)</button>
+
+        <!-- NEW: weekly poster button -->
+        <button id="weeklyPosterBtn">🖼️ Weekly Spotlight Poster (PDF)</button>
+
+        <button id="resetClassBtn">🔄 Reset This Class</button>
       </div>
-    </div>
-  </div>
-
-  <div class="controls">
-    <label for="classSelect">Class Section</label>
-    <select id="classSelect"></select>
-
-    <button id="downloadPdfBtn">📄 Download Section Report (PDF)</button>
-    <button id="resetClassBtn">🔄 Reset This Class</button>
-  </div>
-</header>
-
+    </header>
 
     <main class="grid">
       <section class="panel">
         <h2>👦 Students</h2>
+
         <div class="studentList" id="studentList"></div>
+
         <div class="mini">
           Tip: Drag a student into <b>Green</b> first ✅
+        </div>
+
+        <!-- NEW: Weekly Spotlight Summary -->
+        <div class="weeklyCard">
+          <div class="weeklyHead">
+            <h3>🌟 Weekly Spotlight</h3>
+            <div class="weeklyRange" id="weeklyRange">This week</div>
+          </div>
+
+          <div class="weeklyList" id="weeklyList"></div>
+
+          <div class="weeklyFooter">
+            <button id="clearWeeklyBtn" class="btnLight">🧹 Clear Weekly List</button>
+          </div>
         </div>
       </section>
 
@@ -95,13 +114,12 @@
 
   <!-- Tiny toast message -->
   <div class="toast" id="toast"></div>
-  
+
   <audio id="spotSound" src="success.mp3" preload="auto"></audio>
-  
-  <!-- NEW: jsPDF (needed for PDF reports) -->
+
+  <!-- jsPDF (needed for PDF reports) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <script src="app.js"></script>
-  
 </body>
 </html>
