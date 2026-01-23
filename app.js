@@ -12,10 +12,19 @@ const KEY_PREFIX = "ladder_tiers_class_v1::";
 // Meta storage (teacher + subject)
 const META_KEY = "ladder_meta_v1";
 
+// Weekly spotlight log storage
+const SPOTLIGHT_LOG_KEY = "spotlight_log_v1";
+
 // ========================
 // DOM
 // ========================
 const downloadPdfBtn = document.getElementById("downloadPdfBtn");
+const weeklyPosterBtn = document.getElementById("weeklyPosterBtn");
+const clearWeeklyBtn = document.getElementById("clearWeeklyBtn");
+
+const weeklyListEl = document.getElementById("weeklyList");
+const weeklyRangeEl = document.getElementById("weeklyRange");
+
 const classSelect = document.getElementById("classSelect");
 const studentList = document.getElementById("studentList");
 const overlay = document.getElementById("overlay");
@@ -26,22 +35,28 @@ const spotAvatar = document.getElementById("spotAvatar");
 const resetClassBtn = document.getElementById("resetClassBtn");
 const toast = document.getElementById("toast");
 
-// NEW: Teacher + Subject inputs (make sure these exist in HTML)
+// Teacher + Subject inputs
 const teacherNameInput = document.getElementById("teacherName");
 const subjectNameInput = document.getElementById("subjectName");
 
 const spotSound = document.getElementById("spotSound");
 
 // Unlock audio on first user interaction
-document.addEventListener("click", () => {
-  if (spotSound) {
-    spotSound.play().then(() => {
-      spotSound.pause();
-      spotSound.currentTime = 0;
-    }).catch(()=>{});
-  }
-}, { once: true });
-
+document.addEventListener(
+  "click",
+  () => {
+    if (spotSound) {
+      spotSound
+        .play()
+        .then(() => {
+          spotSound.pause();
+          spotSound.currentTime = 0;
+        })
+        .catch(() => {});
+    }
+  },
+  { once: true }
+);
 
 // ========================
 // CSV LOADER
@@ -83,16 +98,16 @@ async function loadStudentsCSV() {
   if (!res.ok) throw new Error("Cannot load students.csv (make sure it's in the same folder).");
 
   const text = await res.text();
-  const lines = text.split(/\r?\n/).filter(l => l.trim().length);
+  const lines = text.split(/\r?\n/).filter((l) => l.trim().length);
 
   if (lines.length < 2) throw new Error("students.csv looks empty.");
 
-  const headers = splitCSVLine(lines[0]).map(h => h.trim().toLowerCase());
+  const headers = splitCSVLine(lines[0]).map((h) => h.trim().toLowerCase());
 
   const idx = {
     id: headers.indexOf("id"),
     name: headers.indexOf("name"),
-    section: headers.indexOf("section")
+    section: headers.indexOf("section"),
   };
 
   if (idx.id === -1 || idx.name === -1 || idx.section === -1) {
@@ -189,6 +204,54 @@ function saveMeta(meta) {
 }
 
 // ========================
+// STORAGE (weekly spotlight log)
+// ========================
+function loadSpotlightLog() {
+  try {
+    return JSON.parse(localStorage.getItem(SPOTLIGHT_LOG_KEY) || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function saveSpotlightLog(list) {
+  localStorage.setItem(SPOTLIGHT_LOG_KEY, JSON.stringify(list));
+}
+
+// Week starts on Monday (local time)
+function startOfWeek(d = new Date()) {
+  const x = new Date(d);
+  x.setHours(0, 0, 0, 0);
+  const day = x.getDay(); // 0=Sun..6=Sat
+  const diff = day === 0 ? -6 : 1 - day; // shift to Monday
+  x.setDate(x.getDate() + diff);
+  return x;
+}
+
+function endOfWeek(d = new Date()) {
+  const s = startOfWeek(d);
+  const e = new Date(s);
+  e.setDate(e.getDate() + 6);
+  e.setHours(23, 59, 59, 999);
+  return e;
+}
+
+function weekKey(d = new Date()) {
+  const s = startOfWeek(d);
+  return s.toISOString().slice(0, 10); // YYYY-MM-DD (Monday)
+}
+
+function formatDate(d) {
+  return d.toLocaleDateString();
+}
+
+function inThisWeek(ts) {
+  const s = startOfWeek(new Date());
+  const e = endOfWeek(new Date());
+  return ts >= s.getTime() && ts <= e.getTime();
+}
+
+// ========================
 // HELPERS
 // ========================
 function tierIndex(t) {
@@ -206,6 +269,7 @@ function canMoveForward(fromTier, toTier) {
 }
 
 function showToast(msg) {
+  if (!toast) return;
   toast.textContent = msg;
   toast.classList.add("show");
   clearTimeout(showToast._t);
@@ -213,16 +277,17 @@ function showToast(msg) {
 }
 
 function burstConfetti(container, pieces = 140) {
+  if (!container) return;
   container.innerHTML = "";
   const colors = ["#ff4dd2", "#ffcc33", "#6a5cff", "#00d4ff", "#7CFF6B", "#ffffff"];
   for (let i = 0; i < pieces; i++) {
     const p = document.createElement("i");
-    p.style.left = (Math.random() * 100) + "vw";
-    p.style.top = (-20 - Math.random() * 40) + "px";
-    p.style.animationDelay = (Math.random() * 0.25) + "s";
-    p.style.animationDuration = (1.6 + Math.random() * 1.2) + "s";
-    p.style.width = (7 + Math.random() * 10) + "px";
-    p.style.height = (10 + Math.random() * 18) + "px";
+    p.style.left = Math.random() * 100 + "vw";
+    p.style.top = -20 - Math.random() * 40 + "px";
+    p.style.animationDelay = Math.random() * 0.25 + "s";
+    p.style.animationDuration = 1.6 + Math.random() * 1.2 + "s";
+    p.style.width = 7 + Math.random() * 10 + "px";
+    p.style.height = 10 + Math.random() * 18 + "px";
     p.style.background = colors[Math.floor(Math.random() * colors.length)];
     container.appendChild(p);
   }
@@ -230,6 +295,8 @@ function burstConfetti(container, pieces = 140) {
 }
 
 function showSpotlight(className, student) {
+  if (!overlay) return;
+
   spotName.textContent = student.name.toUpperCase() + " 🎉";
   spotClass.textContent = className;
   spotAvatar.textContent = getAvatarFor(student, className);
@@ -238,19 +305,80 @@ function showSpotlight(className, student) {
   burstConfetti(confetti, 160);
 
   if (spotSound) {
-    spotSound.currentTime = 0; // rewind
+    spotSound.currentTime = 0;
     spotSound.play().catch(() => {
-      // Autoplay might be blocked until user interacts once
       console.log("Sound blocked by browser until user interaction.");
     });
   }
 }
 
 // close spotlight
-overlay.addEventListener("click", () => overlay.classList.remove("show"));
+if (overlay) {
+  overlay.addEventListener("click", () => overlay.classList.remove("show"));
+}
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") overlay.classList.remove("show");
+  if (e.key === "Escape" && overlay) overlay.classList.remove("show");
 });
+
+// ========================
+// WEEKLY SUMMARY (UI + LOGIC)
+// ========================
+function logGoldSpotlight(className, student) {
+  const wk = weekKey(new Date());
+  const log = loadSpotlightLog();
+
+  // avoid duplicates: same student + same section, same week
+  const exists = log.some(
+    (x) => x.week === wk && x.studentId === student.id && x.section === className
+  );
+  if (exists) return;
+
+  log.push({
+    week: wk,
+    t: Date.now(),
+    studentId: student.id,
+    name: student.name,
+    section: className,
+  });
+
+  saveSpotlightLog(log);
+}
+
+function getThisWeekEntries() {
+  return loadSpotlightLog()
+    .filter((x) => inThisWeek(x.t))
+    .sort((a, b) => a.t - b.t);
+}
+
+function renderWeeklySummary() {
+  if (!weeklyListEl || !weeklyRangeEl) return;
+
+  const s = startOfWeek(new Date());
+  const e = endOfWeek(new Date());
+  weeklyRangeEl.textContent = `${formatDate(s)} – ${formatDate(e)}`;
+
+  const entries = getThisWeekEntries();
+
+  if (!entries.length) {
+    weeklyListEl.innerHTML = `<div class="weeklyEmpty">No Gold Spotlights yet this week 🌈</div>`;
+    return;
+  }
+
+  weeklyListEl.innerHTML = entries
+    .map(
+      (x, i) => `
+      <div class="weeklyItem">
+        <div class="weeklyNum">${i + 1}</div>
+        <div class="weeklyInfo">
+          <div class="weeklyName">${x.name}</div>
+          <div class="weeklySub">Section: <b>${x.section}</b></div>
+        </div>
+        <div class="weeklyStar">🌟</div>
+      </div>
+    `
+    )
+    .join("");
+}
 
 // ========================
 // RENDER
@@ -283,8 +411,8 @@ function makeStudentCard(student, className) {
 
 function renderClass(className) {
   // clear all areas
-  studentList.innerHTML = "";
-  document.querySelectorAll(".dropArea").forEach(a => (a.innerHTML = ""));
+  if (studentList) studentList.innerHTML = "";
+  document.querySelectorAll(".dropArea").forEach((a) => (a.innerHTML = ""));
 
   const students = CLASSES[className] || [];
 
@@ -310,7 +438,7 @@ function setupDropZones() {
   setupDropTarget(studentList, "none", true);
 
   // Tiers
-  document.querySelectorAll(".zone").forEach(zone => {
+  document.querySelectorAll(".zone").forEach((zone) => {
     const tier = zone.dataset.tier;
     const area = zone.querySelector(".dropArea");
     setupDropTarget(zone, tier, false);
@@ -319,6 +447,8 @@ function setupDropZones() {
 }
 
 function setupDropTarget(targetEl, toTier, isStudentList) {
+  if (!targetEl) return;
+
   const highlightZone = isStudentList
     ? null
     : targetEl.classList.contains("zone")
@@ -344,7 +474,7 @@ function setupDropTarget(targetEl, toTier, isStudentList) {
     const sid = e.dataTransfer.getData("text/plain");
     if (!sid) return;
 
-    const student = students.find(s => s.id === sid);
+    const student = students.find((s) => s.id === sid);
     if (!student) return;
 
     const fromTier = getTier(className, sid);
@@ -365,24 +495,27 @@ function setupDropTarget(targetEl, toTier, isStudentList) {
 
     // Move the card (no duplicates)
     const card = document.querySelector(`.student[data-sid="${sid}"]`);
-    const dropArea = (toTier === "none")
-      ? studentList
-      : document.querySelector(`.dropArea[data-drop="${toTier}"]`);
+    const dropArea =
+      toTier === "none"
+        ? studentList
+        : document.querySelector(`.dropArea[data-drop="${toTier}"]`);
 
     if (card && dropArea) dropArea.prepend(card);
 
     // Save tier
     setTier(className, sid, toTier);
 
-    // Spotlight on Gold
+    // Spotlight on Gold + weekly log
     if (toTier === "gold") {
       showSpotlight(className, student);
+      logGoldSpotlight(className, student);
+      renderWeeklySummary();
     }
   });
 }
 
 // ========================
-// PDF REPORT
+// PDF REPORT (SECTION)
 // ========================
 function safeFileName(str) {
   return String(str || "")
@@ -419,7 +552,6 @@ function downloadSectionPDF() {
   doc.text(`Subject: ${sName}`, 14, 44);
   doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 52);
 
-  // ✅ DEFINE y
   let y = 64;
 
   // Table header
@@ -448,18 +580,22 @@ function downloadSectionPDF() {
     }
   });
 
-  // ===== Summary Section (AFTER list) =====
+  // Summary
   y += 10;
-  if (y > 240) { doc.addPage(); y = 20; }
+  if (y > 240) {
+    doc.addPage();
+    y = 20;
+  }
 
   const counts = { none: 0, green: 0, bronze: 0, silver: 0, gold: 0 };
-  students.forEach(s => {
+  students.forEach((s) => {
     const t = tierMap[s.id] || "none";
     counts[t] = (counts[t] || 0) + 1;
   });
 
   doc.setFontSize(13);
-  doc.text("Progress Summary", 14, y); y += 10;
+  doc.text("Progress Summary", 14, y);
+  y += 10;
 
   doc.setFontSize(11);
   doc.text(`Total Students: ${students.length}`, 14, y); y += 8;
@@ -468,10 +604,13 @@ function downloadSectionPDF() {
   doc.text(`Silver  : ${counts.silver}`, 14, y); y += 8;
   doc.text(`Gold    : ${counts.gold}`, 14, y); y += 10;
 
-  y+=24;
+  y += 24;
 
   // Note section
-  if (y > 250) { doc.addPage(); y = 20; }
+  if (y > 250) {
+    doc.addPage();
+    y = 20;
+  }
 
   doc.setFontSize(11);
   doc.text("Note:", 14, y);
@@ -480,7 +619,7 @@ function downloadSectionPDF() {
   doc.setFontSize(10);
   const noteText =
     "This Positive Behavior Report shows each student's current achievement level based on classroom participation, performance, and behavior. " +
-    "Students progress through Green, Bronze, Silver, and Gold levels. Gold level represents outstanding achievement and excellence." +
+    "Students progress through Green, Bronze, Silver, and Gold levels. Gold level represents outstanding achievement and excellence. " +
     "This is a system generated report.";
 
   const wrappedNote = doc.splitTextToSize(noteText, 180);
@@ -490,7 +629,89 @@ function downloadSectionPDF() {
   doc.save(fileName);
 }
 
+// ========================
+// PDF REPORT (WEEKLY POSTER)
+// ========================
+function downloadWeeklySpotlightPosterPDF() {
+  if (!window.jspdf || !window.jspdf.jsPDF) {
+    alert("PDF library (jsPDF) not loaded.");
+    return;
+  }
 
+  const entries = getThisWeekEntries();
+  const s = startOfWeek(new Date());
+  const e = endOfWeek(new Date());
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+
+  // Poster header blocks
+  doc.setFillColor(106, 92, 255); // purple
+  doc.rect(0, 0, 210, 28, "F");
+
+  doc.setFillColor(0, 212, 255); // cyan
+  doc.rect(0, 28, 210, 10, "F");
+
+  // White card
+  doc.setFillColor(255, 255, 255);
+  doc.rect(10, 42, 190, 245, "F");
+
+  // Title
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(20);
+  doc.text("🌟 WEEKLY SPOTLIGHT 🌟", 105, 18, { align: "center" });
+
+  doc.setFontSize(11);
+  doc.text("SISB-NR Positive Behavior Rewards", 105, 35, { align: "center" });
+
+  // Week range
+  doc.setTextColor(17, 24, 39);
+  doc.setFontSize(12);
+  doc.text(`Week: ${formatDate(s)} – ${formatDate(e)}`, 105, 52, { align: "center" });
+
+  let y = 70;
+
+  if (!entries.length) {
+    doc.setFontSize(16);
+    doc.text("No Gold Spotlights yet this week 🌈", 105, y, { align: "center" });
+    doc.save(`Weekly_Spotlight_${weekKey(new Date())}.pdf`);
+    return;
+  }
+
+  // List header
+  doc.setFontSize(12);
+  doc.text("Student Name", 22, y);
+  doc.text("Section", 150, y);
+  y += 6;
+  doc.setDrawColor(200);
+  doc.line(20, y, 190, y);
+  y += 10;
+
+  // Rows
+  doc.setFontSize(12);
+  entries.forEach((x, i) => {
+    doc.text(String(i + 1) + ".", 14, y);
+    doc.text(x.name, 22, y);
+    doc.text(x.section, 150, y);
+    y += 9;
+
+    if (y > 270) {
+      doc.addPage();
+      y = 20;
+    }
+  });
+
+  // Footer
+  if (y > 255) {
+    doc.addPage();
+    y = 20;
+  }
+  doc.setFontSize(10);
+  doc.setTextColor(80);
+  doc.text("Gold Spotlight = outstanding achievement and excellence. ⭐", 105, 285, { align: "center" });
+
+  doc.save(`Weekly_Spotlight_${weekKey(new Date())}.pdf`);
+}
 
 // ========================
 // INIT
@@ -504,10 +725,7 @@ async function init() {
     if (!classNames.length) throw new Error("No classes found in students.csv");
 
     // populate class dropdown
-    classSelect.innerHTML = classNames
-      .map(c => `<option value="${c}">${c}</option>`)
-      .join("");
-
+    classSelect.innerHTML = classNames.map((c) => `<option value="${c}">${c}</option>`).join("");
     classSelect.value = classNames[0];
 
     // load meta into inputs (if present)
@@ -518,34 +736,61 @@ async function init() {
     // save meta while typing
     if (teacherNameInput) {
       teacherNameInput.addEventListener("input", () => {
-        saveMeta({ teacherName: teacherNameInput.value, subjectName: subjectNameInput ? subjectNameInput.value : "" });
+        saveMeta({
+          teacherName: teacherNameInput.value,
+          subjectName: subjectNameInput ? subjectNameInput.value : "",
+        });
       });
     }
     if (subjectNameInput) {
       subjectNameInput.addEventListener("input", () => {
-        saveMeta({ teacherName: teacherNameInput ? teacherNameInput.value : "", subjectName: subjectNameInput.value });
+        saveMeta({
+          teacherName: teacherNameInput ? teacherNameInput.value : "",
+          subjectName: subjectNameInput.value,
+        });
       });
     }
 
     // render first class
     renderClass(classSelect.value);
 
+    // weekly UI
+    renderWeeklySummary();
+
     // wire events
     classSelect.addEventListener("change", () => renderClass(classSelect.value));
-    downloadPdfBtn.addEventListener("click", downloadSectionPDF);
 
-    resetClassBtn.addEventListener("click", () => {
-    const cls = classSelect.value;
-  
-    const ok = confirm(`Reset this class?\n\n${cls}\n\nThis will clear all Green/Bronze/Silver/Gold progress for this section on this device.`);
-  
-    if (!ok) return;
-  
-    clearClassProgress(cls);
-    renderClass(cls);
-    showToast("Class reset ✅");
-  });
+    if (downloadPdfBtn) downloadPdfBtn.addEventListener("click", downloadSectionPDF);
+    if (weeklyPosterBtn) weeklyPosterBtn.addEventListener("click", downloadWeeklySpotlightPosterPDF);
 
+    if (clearWeeklyBtn) {
+      clearWeeklyBtn.addEventListener("click", () => {
+        const ok = confirm("Clear ONLY this week's spotlight list on this device?");
+        if (!ok) return;
+
+        const wk = weekKey(new Date());
+        const log = loadSpotlightLog().filter((x) => x.week !== wk);
+        saveSpotlightLog(log);
+
+        renderWeeklySummary();
+        showToast("Weekly list cleared ✅");
+      });
+    }
+
+    if (resetClassBtn) {
+      resetClassBtn.addEventListener("click", () => {
+        const cls = classSelect.value;
+
+        const ok = confirm(
+          `Reset this class?\n\n${cls}\n\nThis will clear all Green/Bronze/Silver/Gold progress for this section on this device.`
+        );
+        if (!ok) return;
+
+        clearClassProgress(cls);
+        renderClass(cls);
+        showToast("Class reset ✅");
+      });
+    }
 
     setupDropZones();
   } catch (err) {
