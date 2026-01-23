@@ -409,3 +409,99 @@ button{
   border-radius: 10px;
 }
 
+/* =========================
+   Weekly Spotlight Summary
+   ========================= */
+
+.weeklyCard{
+  margin-top: 12px;
+  background: rgba(255,255,255,.9);
+  border-radius: 18px;
+  border: 2px solid rgba(0,0,0,.08);
+  box-shadow: 0 10px 18px rgba(0,0,0,.10);
+  padding: 12px;
+}
+
+.weeklyHead{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom: 8px;
+}
+
+.weeklyHead h3{
+  margin:0;
+  font-size: 14px;
+  font-weight: 1000;
+}
+
+.weeklyRange{
+  font-size: 11px;
+  font-weight: 900;
+  color: var(--muted);
+}
+
+.weeklyList{
+  display:grid;
+  gap:8px;
+  max-height: 220px;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.weeklyEmpty{
+  font-weight: 900;
+  color: var(--muted);
+  background: rgba(0,0,0,.03);
+  border: 2px dashed rgba(0,0,0,.12);
+  border-radius: 14px;
+  padding: 10px;
+  text-align:center;
+}
+
+.weeklyItem{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background: rgba(0,0,0,.03);
+  border: 2px solid rgba(0,0,0,.06);
+  border-radius: 14px;
+  padding: 8px 10px;
+}
+
+.weeklyNum{
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  display:grid;
+  place-items:center;
+  font-weight:1000;
+  background: rgba(255,255,255,.9);
+  border:2px solid rgba(0,0,0,.08);
+}
+
+.weeklyInfo{ flex:1; min-width:0; }
+.weeklyName{ font-weight:1000; }
+.weeklySub{ font-size:12px; color: var(--muted); font-weight:900; }
+
+.weeklyStar{ font-size: 18px; }
+
+.weeklyFooter{
+  margin-top: 10px;
+  display:flex;
+  justify-content:flex-end;
+}
+
+/* Light button style for "Clear Weekly List" */
+.btnLight{
+  background: linear-gradient(135deg, #ffffff, #f3f4f6);
+  color: #111827;
+  border: 2px solid rgba(0,0,0,.08);
+  box-shadow: 0 10px 20px rgba(0,0,0,.10);
+}
+.btnLight:hover{
+  transform: translateY(-1px);
+}
+
+
