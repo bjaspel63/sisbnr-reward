@@ -950,6 +950,35 @@ async function init() {
       });
     }
 
+    if (addAllGreenBtn) {
+  addAllGreenBtn.addEventListener("click", () => {
+    const cls = classSelect.value;
+    const students = CLASSES[cls] || [];
+    const greenArea = document.querySelector(`.dropArea[data-drop="green"]`);
+    if (!greenArea) return;
+
+    let moved = 0;
+
+    students.forEach((s) => {
+      const current = getTier(cls, s.id);
+
+      // only move students who are still in "none"
+      if (current !== "none") return;
+
+      setTier(cls, s.id, "green");
+
+      const card = document.querySelector(`.student[data-sid="${s.id}"]`);
+      if (card) greenArea.prepend(card);
+
+      moved++;
+    });
+
+    if (moved === 0) showToast("Everyone is already started ✅");
+    else showToast(`Added ${moved} student(s) to Green ✅`);
+  });
+}
+
+
     setupDropZones();
   } catch (err) {
     console.error(err);
