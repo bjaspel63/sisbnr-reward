@@ -31,6 +31,7 @@ const weeklyRangeEl = document.getElementById("weeklyRange");
 // ✅ NEW: show/hide
 const toggleWeeklyBtn = document.getElementById("toggleWeeklyBtn");
 const weeklyBodyEl = document.getElementById("weeklyBody");
+const addAllGreenBtn = document.getElementById("addAllGreenBtn");
 
 const classSelect = document.getElementById("classSelect");
 const studentList = document.getElementById("studentList");
