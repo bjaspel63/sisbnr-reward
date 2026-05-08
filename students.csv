@@ -1,7 +1,6 @@
 id,name,section
 240932,Aeya,P1 - Joy
 231242,Aim,P1 - Joy
-240211,Aliz,P1 - Joy
 230721,Ava,P1 - Joy
 241026,Charmmy,P1 - Joy
 241058,Cher-aim,P1 - Joy
@@ -9,7 +8,6 @@ id,name,section
 250136,Kajee,P1 - Joy
 230720,Mali,P1 - Joy
 240931,Nada,P1 - Joy
-230707,Nicha,P1 - Joy
 230696,Pooh,P1 - Joy
 231313,Prin Prin,P1 - Joy
 230714,Putt,P1 - Joy
@@ -29,7 +27,6 @@ id,name,section
 231121,Fur Elise,P1 - Love
 240892,Jinjin,P1 - Love
 230704,Kira,P1 - Love
-230709,Lalin,P1 - Love
 230713,Lindt,P1 - Love
 230719,Lydia,P1 - Love
 240136,Maple,P1 - Love
@@ -46,7 +43,6 @@ id,name,section
 231065,TongTong,P1 - Love
 240329,Tonpho,P1 - Love
 230693,Aden,P1 - Peace
-240212,Alin,P1 - Peace
 241038,Ami,P1 - Peace
 230711,Ana,P1 - Peace
 230697,Anda,P1 - Peace
@@ -59,7 +55,6 @@ id,name,section
 240634,Luca,P1 - Peace
 230692,Mu,P1 - Peace
 240800,Penne,P1 - Peace
-230703,Peporche,P1 - Peace
 240763,R-Heng,P1 - Peace
 241023,Romie,P1 - Peace
 230710,Tamtam,P1 - Peace
@@ -79,8 +74,8 @@ id,name,section
 230750,Leia,P2 - Joy
 240991,Lilun,P2 - Joy
 230745,Mekha,P2 - Joy
+00000,Ngowkim,P2 - Joy
 231321,Numadee,P2 - Joy
-241022,Ongsa,P2 - Joy
 230737,Phobthum,P2 - Joy
 231312,Punpun,P2 - Joy
 231419,Put,P2 - Joy
@@ -112,9 +107,6 @@ id,name,section
 230743,Inlove,P2 - Peace
 241028,Janjao,P2 - Peace
 231416,Mhen,P2 - Peace
-230735,Natty,P2 - Peace
-230732,Peperth,P2 - Peace
-230899,Phakin,P2 - Peace
 231291,Proudfah,P2 - Peace
 230730,Pung Pung,P2 - Peace
 230751,Renz,P2 - Peace
@@ -128,7 +120,6 @@ id,name,section
 00000,Deedy,P3 - Joy
 230761,Dom,P3 - Joy
 230778,Fancy,P3 - Joy
-240441,Faye,P3 - Joy
 231089,Fluke Fix,P3 - Joy
 240927,Hua Hua,P3 - Joy
 230765,Jai Jai,P3 - Joy
@@ -144,6 +135,7 @@ id,name,section
 230799,Alfa,P4 - Joy
 230792,Anna,P4 - Joy
 250144,Ava,P4 - Joy
+230877,Bhu,P4 - Joy
 230785,Boyu,P4 - Joy
 240425,Didi,P4 - Joy
 230794,Do,P4 - Joy
@@ -165,7 +157,6 @@ id,name,section
 240327,WeiWei,P4 - Joy
 230795,Xixi,P4 - Joy
 230788,Austin,P4 - Love
-230877,Bhu,P4 - Love
 230789,Centa,P4 - Love
 240790,Chan,P4 - Love
 230786,Chatin,P4 - Love
@@ -174,6 +165,7 @@ id,name,section
 230883,Fungfun,P4 - Love
 250222,Handball,P4 - Love
 250279,Kreme,P4 - Love
+00000,Kuihua,P4 - Love
 240821,M.C.,P4 - Love
 240124,Mia,P4 - Love
 230797,Mirin,P4 - Love
@@ -184,9 +176,9 @@ id,name,section
 240089,Prin,P4 - Love
 230880,Rene,P4 - Love
 240743,Run,P4 - Love
+00000,Seiji,P4 - Love
 230784,Tin Tin,P4 - Love
 240215,Alieen,P5 - Joy
-240440,Atom,P5 - Joy
 231334,Gundam,P5 - Joy
 231276,Honey,P5 - Joy
 230809,Hulk,P5 - Joy
@@ -201,10 +193,8 @@ id,name,section
 240385,Ongtong,P5 - Joy
 230806,Piano,P5 - Joy
 230817,Proud,P5 - Joy
-230884,Ray,P5 - Joy
 240139,Tritonz,P5 - Joy
 231194,Aomsup,P5 - Love
-230813,Arzoo,P5 - Love
 231310,Ashi,P5 - Love
 230810,Captain,P5 - Love
 240978,Daisy,P5 - Love
@@ -220,7 +210,6 @@ id,name,section
 230808,Venus,P5 - Love
 240442,Wayu,P5 - Love
 230812,Yaimai,P5 - Love
-230822,Apgar,P6 - Joy
 230833,Celine,P6 - Joy
 230821,Daydee,P6 - Joy
 231365,Fin,P6 - Joy
@@ -231,10 +220,10 @@ id,name,section
 230826,Kwankao,P6 - Joy
 240660,Leo,P6 - Joy
 250113,Luna,P6 - Joy
-240090,Peak,P6 - Joy
 250189,Point,P6 - Joy
 231311,Poon,P6 - Joy
 230824,Sammy,P6 - Joy
+00000,Yosei,P6 - Joy
 230882,Bhuping,P6 - Love
 240614,Chanya,P6 - Love
 230828,Emma,P6 - Love
