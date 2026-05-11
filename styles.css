@@ -199,7 +199,7 @@ button{
 }
 
 .z-yellow{
-  background: linear-gradient(135deg, #facc15, #fde68a);
+  background: linear-gradient(135deg, #facc15, #facc15);
 }
 
 .z-blue{
@@ -208,7 +208,7 @@ button{
 .z-green{  background: linear-gradient(135deg, #00c853, #b2ff59); }
 .z-bronze{ background: linear-gradient(135deg, #b45309, #f59e0b); }
 .z-silver{ background: linear-gradient(135deg, #64748b, #e5e7eb); }
-.z-gold{   background: linear-gradient(135deg, #ffb300, #ffe082); }
+.z-gold{   background: linear-gradient(135deg, #ffb300, #ff6b00); }
 
 .tag{
   position:absolute;
