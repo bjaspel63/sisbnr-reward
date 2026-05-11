@@ -150,7 +150,7 @@ button{
 
 .zones{
   display:grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap:12px;
   align-content:start;
 }
@@ -194,7 +194,17 @@ button{
   border-color: rgba(255,255,255,1);
   transform: scale(1.01);
 }
+.z-red{
+  background: linear-gradient(135deg, #ef4444, #fca5a5);
+}
 
+.z-yellow{
+  background: linear-gradient(135deg, #facc15, #fde68a);
+}
+
+.z-blue{
+  background: linear-gradient(135deg, #2563eb, #93c5fd);
+}
 .z-green{  background: linear-gradient(135deg, #00c853, #b2ff59); }
 .z-bronze{ background: linear-gradient(135deg, #b45309, #f59e0b); }
 .z-silver{ background: linear-gradient(135deg, #64748b, #e5e7eb); }
