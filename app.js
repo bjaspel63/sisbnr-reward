@@ -758,7 +758,7 @@ function downloadWeeklySpotlightPosterPDF() {
     doc.text("WEEKLY SPOTLIGHT", W / 2, 26, { align: "center" });
 
     doc.setFontSize(11);
-    doc.text("SISB-NR Behavior Rewards", W / 2, 39, { align: "center" });
+    doc.text("SISB-NR Behavior Chart", W / 2, 39, { align: "center" });
 
     doc.setTextColor(17, 24, 39);
     doc.setFontSize(12);
