@@ -583,7 +583,7 @@ function downloadSectionPDF() {
   const doc = new jsPDF();
 
   doc.setFontSize(18);
-  doc.text("SISB-NR Positive Behavior Report", 14, 18);
+  doc.text("SISB-NR Behavior Report", 14, 18);
 
   doc.setFontSize(12);
   doc.text(`Section: ${className}`, 14, 28);
@@ -755,7 +755,7 @@ function downloadWeeklySpotlightPosterPDF() {
     doc.text("WEEKLY SPOTLIGHT", W / 2, 26, { align: "center" });
 
     doc.setFontSize(11);
-    doc.text("SISB-NR Positive Behavior Rewards", W / 2, 39, { align: "center" });
+    doc.text("SISB-NR Behavior Rewards", W / 2, 39, { align: "center" });
 
     doc.setTextColor(17, 24, 39);
     doc.setFontSize(12);
