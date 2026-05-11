@@ -6,13 +6,13 @@ let CLASSES = {}; // will be filled by loadStudentsCSV()
 // Progress ladder (no list tier)
 const ORDER = [
   "none",
-  "red",
-  "yellow",
-  "blue",
-  "green",
-  "bronze",
+  "gold",
   "silver",
-  "gold"
+  "bronze",
+  "green",
+  "blue",
+  "yellow",
+  "red"
 ];
 
 // Storage key per class
