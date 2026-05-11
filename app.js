@@ -623,7 +623,7 @@ function downloadSectionPDF() {
     y = 20;
   }
 
-  const counts = { none: 0, green: 0, bronze: 0, silver: 0, gold: 0 };
+  const counts = { gold: 0, silver: 0, bronze: 0, green: 0, blue: 0, yellow: 0, red: 0, none: 0 };
   students.forEach((s) => {
     const t = tierMap[s.id] || "none";
     counts[t] = (counts[t] || 0) + 1;
@@ -635,10 +635,13 @@ function downloadSectionPDF() {
 
   doc.setFontSize(11);
   doc.text(`Total Students: ${students.length}`, 14, y); y += 8;
-  doc.text(`Green   : ${counts.green}`, 14, y); y += 8;
-  doc.text(`Bronze  : ${counts.bronze}`, 14, y); y += 8;
+  doc.text(`Gold   : ${counts.gold}`, 14, y); y += 8;
   doc.text(`Silver  : ${counts.silver}`, 14, y); y += 8;
-  doc.text(`Gold    : ${counts.gold}`, 14, y); y += 10;
+  doc.text(`Bronze  : ${counts.bronze}`, 14, y); y += 8;
+  doc.text(`Green  : ${counts.green}`, 14, y); y += 8;
+  doc.text(`Blue  : ${counts.blue}`, 14, y); y += 8;
+  doc.text(`Yellow  : ${counts.yellow}`, 14, y); y += 8;
+  doc.text(`Red    : ${counts.red}`, 14, y); y += 10;
 
   y += 24;
 
