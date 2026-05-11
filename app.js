@@ -654,7 +654,7 @@ function downloadSectionPDF() {
   doc.setFontSize(10);
   const noteText =
     "This Behavior Report Chart shows each student's current achievement level based on classroom participation, performance, and behavior. " +
-    "Students progress through Red, Yellow, Blue, Green, Bronze, Silver, and Gold levels. The gold level represents outstanding achievement and excellence. " +
+    "Students progress through Green, Bronze, Silver, and Gold levels. The gold level represents outstanding achievement and excellence. " +
     "This is a system-generated report.";
 
   const wrappedNote = doc.splitTextToSize(noteText, 180);
