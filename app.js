@@ -656,7 +656,7 @@ function downloadSectionPDF() {
 
   doc.setFontSize(10);
   const noteText =
-    "This Behavior Report Chart shows each student's current achievement level based on classroom participation, performance, and behavior. " +
+    "This Behavior Report shows each student's current achievement level based on classroom participation, performance, and behavior. " +
     "Students progress through Green, Bronze, Silver, and Gold levels. The gold level represents outstanding achievement and excellence. " +
     "This is a system-generated report.";
 
@@ -758,7 +758,7 @@ function downloadWeeklySpotlightPosterPDF() {
     doc.text("WEEKLY SPOTLIGHT", W / 2, 26, { align: "center" });
 
     doc.setFontSize(11);
-    doc.text("SISB-NR Behavior Chart", W / 2, 39, { align: "center" });
+    doc.text("SISB-NR Behavior Report", W / 2, 39, { align: "center" });
 
     doc.setTextColor(17, 24, 39);
     doc.setFontSize(12);
