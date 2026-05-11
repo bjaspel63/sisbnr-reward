@@ -75,7 +75,22 @@ input:focus{
   border-color: rgba(255, 77, 210, .6);
   box-shadow: 0 0 0 4px rgba(255, 77, 210, .18);
 }
+.groupLabel{
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-weight: 1000;
+  text-align: center;
+  color: white;
+  box-shadow: 0 10px 20px rgba(0,0,0,.12);
+}
 
+.negativeLabel{
+  background: linear-gradient(135deg, #ef4444, #f59e0b);
+}
+
+.positiveLabel{
+  background: linear-gradient(135deg, #10b981, #6a5cff);
+}
 
 button{
   border:0; cursor:pointer;
