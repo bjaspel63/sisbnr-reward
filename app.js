@@ -379,6 +379,21 @@ function logGoldSpotlight(className, student) {
   saveSpotlightLog(log);
 }
 
+function removeGoldSpotlight(className, studentId) {
+  const wk = weekKey(new Date());
+
+  const updated = loadSpotlightLog().filter(
+    (x) =>
+      !(
+        x.week === wk &&
+        x.section === className &&
+        x.studentId === studentId
+      )
+  );
+
+  saveSpotlightLog(updated);
+}
+
 function getThisWeekEntries() {
   return loadSpotlightLog()
     .filter((x) => inThisWeek(x.t))
@@ -522,11 +537,20 @@ if (fromTier === toTier) return;
 
     setTier(className, sid, toTier);
 
-    if (toTier === "gold") {
-      showSpotlight(className, student);
-      logGoldSpotlight(className, student);
-      renderWeeklySummary();
-    }
+setTier(className, sid, toTier);
+
+// remove from weekly spotlight if dragged OUT of gold
+if (fromTier === "gold" && toTier !== "gold") {
+  removeGoldSpotlight(className, sid);
+  renderWeeklySummary();
+}
+
+// add to weekly spotlight if moved INTO gold
+if (toTier === "gold") {
+  showSpotlight(className, student);
+  logGoldSpotlight(className, student);
+  renderWeeklySummary();
+}
   });
 }
 
