@@ -953,7 +953,7 @@ async function init() {
   addAllGreenBtn.addEventListener("click", () => {
     const cls = classSelect.value;
     const students = CLASSES[cls] || [];
-    const greenArea = document.querySelector(`.dropArea[data-drop="red"]`);
+    const greenArea = document.querySelector(`.dropArea[data-drop="green"]`);
     if (!greenArea) return;
 
     let moved = 0;
@@ -964,7 +964,7 @@ async function init() {
       // only move students who are still in "none"
       if (current !== "none") return;
 
-     setTier(cls, s.id, "red");
+     setTier(cls, s.id, "green");
 
       const card = document.querySelector(`.student[data-sid="${s.id}"]`);
       if (card) greenArea.prepend(card);
