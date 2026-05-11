@@ -4,7 +4,16 @@
 let CLASSES = {}; // will be filled by loadStudentsCSV()
 
 // Progress ladder (no list tier)
-const ORDER = ["none", "green", "bronze", "silver", "gold"];
+const ORDER = [
+  "none",
+  "red",
+  "yellow",
+  "blue",
+  "green",
+  "bronze",
+  "silver",
+  "gold"
+];
 
 // Storage key per class
 const KEY_PREFIX = "ladder_tiers_class_v1::";
@@ -500,18 +509,8 @@ function setupDropTarget(targetEl, toTier, isStudentList) {
 
     const fromTier = getTier(className, sid);
 
-    if (toTier === "none") {
-      if (fromTier !== "none") {
-        showToast("Forward only! 🙂 (No going back)");
-        return;
-      }
-    } else {
-      if (!canMoveForward(fromTier, toTier)) {
-        const expected = nextTier(fromTier);
-        showToast(`Next step: ${expected ? expected.toUpperCase() : "DONE!"}`);
-        return;
-      }
-    }
+    // allow moving freely between tiers
+if (fromTier === toTier) return;
 
     const card = document.querySelector(`.student[data-sid="${sid}"]`);
     const dropArea =
@@ -954,7 +953,7 @@ async function init() {
   addAllGreenBtn.addEventListener("click", () => {
     const cls = classSelect.value;
     const students = CLASSES[cls] || [];
-    const greenArea = document.querySelector(`.dropArea[data-drop="green"]`);
+    const greenArea = document.querySelector(`.dropArea[data-drop="red"]`);
     if (!greenArea) return;
 
     let moved = 0;
@@ -965,7 +964,7 @@ async function init() {
       // only move students who are still in "none"
       if (current !== "none") return;
 
-      setTier(cls, s.id, "green");
+     setTier(cls, s.id, "red");
 
       const card = document.querySelector(`.student[data-sid="${s.id}"]`);
       if (card) greenArea.prepend(card);
