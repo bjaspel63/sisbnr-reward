@@ -543,7 +543,8 @@ function setupDropTarget(targetEl, toTier, isStudentList) {
 targetEl.addEventListener("drop", (e) => {
   e.preventDefault();
 
-  if (highlightZone) highlightZone.classList.remove("dragover");
+  if (highlightZone)
+    highlightZone.classList.remove("dragover");
 
   const className = classSelect.value;
   const students = CLASSES[className] || [];
@@ -553,21 +554,16 @@ targetEl.addEventListener("drop", (e) => {
 
   const ids = JSON.parse(data);
 
-  // destination container
-  let dropArea;
-
-  if (toTier === "none") {
-    dropArea = studentList;
-  } else {
-    dropArea = document.querySelector(
-      `.dropArea[data-drop="${toTier}"]`
-    );
-  }
+  const dropArea =
+    toTier === "none"
+      ? studentList
+      : document.querySelector(`.dropArea[data-drop="${toTier}"]`);
 
   ids.forEach((sid) => {
-
-    const student = students.find(s => s.id === sid);
+    const student = students.find((s) => s.id === sid);
     if (!student) return;
+
+    const fromTier = getTier(className, sid);
 
     if (fromTier === toTier) return;
 
@@ -577,10 +573,23 @@ targetEl.addEventListener("drop", (e) => {
       `.student[data-sid="${sid}"]`
     );
 
-    if (card && dropArea) {
+    if (card && dropArea)
       dropArea.prepend(card);
-      card.classList.remove("selected");
+
+    card?.classList.remove("selected");
+
+    if (fromTier === "gold" && toTier !== "gold")
+      removeGoldSpotlight(className, sid);
+
+    if (toTier === "gold") {
+      showSpotlight(className, student);
+      logGoldSpotlight(className, student);
     }
+  });
+
+  selectedStudents.clear();
+
+  renderWeeklySummary();
 });
 
 // ========================
