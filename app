@@ -540,81 +540,48 @@ function setupDropTarget(targetEl, toTier, isStudentList) {
     if (highlightZone) highlightZone.classList.remove("dragover");
   });
 
-  targetEl.addEventListener("drop", (e) => {
-    e.preventDefault();
-    if (highlightZone) highlightZone.classList.remove("dragover");
+targetEl.addEventListener("drop", (e) => {
+  e.preventDefault();
 
-    const className = classSelect.value;
-    const students = CLASSES[className] || [];
+  if (highlightZone) highlightZone.classList.remove("dragover");
+
+  const className = classSelect.value;
+  const students = CLASSES[className] || [];
 
   const data = e.dataTransfer.getData("text/plain");
   if (!data) return;
-  
-  
+
   const ids = JSON.parse(data);
 
-    const fromTier = getTier(className, sid);
+  // destination container
+  let dropArea;
 
-    // allow moving freely between tiers
-ids.forEach((sid)=>{
-
-  const student = students.find(s=>s.id===sid);
-  if(!student) return;
-
-
-  const fromTier = getTier(className,sid);
-
-  if(fromTier === toTier) return;
-
-
-  const card=document.querySelector(
-    `.student[data-sid="${sid}"]`
-  );
-
-
-  if(card && dropArea){
-    dropArea.prepend(card);
-    card.classList.remove("selected");
+  if (toTier === "none") {
+    dropArea = studentList;
+  } else {
+    dropArea = document.querySelector(
+      `.dropArea[data-drop="${toTier}"]`
+    );
   }
 
+  ids.forEach((sid) => {
 
-  setTier(className,sid,toTier);
+    const student = students.find(s => s.id === sid);
+    if (!student) return;
 
+    if (fromTier === toTier) return;
 
-  // Gold spotlight handling
-  if(fromTier==="gold" && toTier!=="gold"){
-    removeGoldSpotlight(className,sid);
-  }
+    setTier(className, sid, toTier);
 
+    const card = document.querySelector(
+      `.student[data-sid="${sid}"]`
+    );
 
-  if(toTier==="gold"){
-    showSpotlight(className,student);
-    logGoldSpotlight(className,student);
-  }
-
+    if (card && dropArea) {
+      dropArea.prepend(card);
+      card.classList.remove("selected");
+    }
 });
-
-
-selectedStudents.clear();
-
-renderWeeklySummary();
-
-setTier(className, sid, toTier);
-
-// remove from weekly spotlight if dragged OUT of gold
-if (fromTier === "gold" && toTier !== "gold") {
-  removeGoldSpotlight(className, sid);
-  renderWeeklySummary();
-}
-
-// add to weekly spotlight if moved INTO gold
-if (toTier === "gold") {
-  showSpotlight(className, student);
-  logGoldSpotlight(className, student);
-  renderWeeklySummary();
-}
-  });
-}
 
 // ========================
 // PDF REPORT (SECTION)
