@@ -2,6 +2,7 @@
 // DATA (loaded from CSV)
 // ========================
 let CLASSES = {}; // will be filled by loadStudentsCSV()
+let selectedStudents = new Set();
 
 // Progress ladder (no list tier)
 const ORDER = [
@@ -451,10 +452,40 @@ function makeStudentCard(student, className) {
     </div>
   `;
 
-  card.addEventListener("dragstart", (e) => {
-    e.dataTransfer.setData("text/plain", student.id);
-    e.dataTransfer.effectAllowed = "move";
-  });
+ card.addEventListener("click", () => {
+
+  if (selectedStudents.has(student.id)) {
+    selectedStudents.delete(student.id);
+    card.classList.remove("selected");
+  } else {
+    selectedStudents.add(student.id);
+    card.classList.add("selected");
+  }
+
+});
+
+
+card.addEventListener("dragstart", (e) => {
+
+  if (!selectedStudents.has(student.id)) {
+    selectedStudents.clear();
+
+    document.querySelectorAll(".student.selected")
+      .forEach(el => el.classList.remove("selected"));
+
+    selectedStudents.add(student.id);
+    card.classList.add("selected");
+  }
+
+
+  e.dataTransfer.setData(
+    "text/plain",
+    JSON.stringify([...selectedStudents])
+  );
+
+  e.dataTransfer.effectAllowed = "move";
+
+});
 
   return card;
 }
@@ -516,26 +547,57 @@ function setupDropTarget(targetEl, toTier, isStudentList) {
     const className = classSelect.value;
     const students = CLASSES[className] || [];
 
-    const sid = e.dataTransfer.getData("text/plain");
-    if (!sid) return;
-
-    const student = students.find((s) => s.id === sid);
-    if (!student) return;
+  const data = e.dataTransfer.getData("text/plain");
+  if (!data) return;
+  
+  
+  const ids = JSON.parse(data);
 
     const fromTier = getTier(className, sid);
 
     // allow moving freely between tiers
-if (fromTier === toTier) return;
+ids.forEach((sid)=>{
 
-    const card = document.querySelector(`.student[data-sid="${sid}"]`);
-    const dropArea =
-      toTier === "none"
-        ? studentList
-        : document.querySelector(`.dropArea[data-drop="${toTier}"]`);
+  const student = students.find(s=>s.id===sid);
+  if(!student) return;
 
-    if (card && dropArea) dropArea.prepend(card);
 
-    setTier(className, sid, toTier);
+  const fromTier = getTier(className,sid);
+
+  if(fromTier === toTier) return;
+
+
+  const card=document.querySelector(
+    `.student[data-sid="${sid}"]`
+  );
+
+
+  if(card && dropArea){
+    dropArea.prepend(card);
+    card.classList.remove("selected");
+  }
+
+
+  setTier(className,sid,toTier);
+
+
+  // Gold spotlight handling
+  if(fromTier==="gold" && toTier!=="gold"){
+    removeGoldSpotlight(className,sid);
+  }
+
+
+  if(toTier==="gold"){
+    showSpotlight(className,student);
+    logGoldSpotlight(className,student);
+  }
+
+});
+
+
+selectedStudents.clear();
+
+renderWeeklySummary();
 
 setTier(className, sid, toTier);
 
