@@ -502,6 +502,12 @@ button{
   justify-content:flex-end;
 }
 
+.student.selected{
+  border:3px solid #ffcc33;
+  transform:scale(1.03);
+  background:#fff9db;
+}
+
 /* Light button style for "Clear Weekly List" */
 .btnLight{
   background: linear-gradient(135deg, #ffffff, #f3f4f6);
